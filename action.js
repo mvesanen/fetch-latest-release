@@ -29,7 +29,7 @@ async function run() {
 
     const octokit = github.getOctokit(core.getInput('github_token', { required: true }));
     // Load release list from GitHub
-    let releaseList = yield octokit.repos.listReleases({
+    let releaseList = await octokit.repos.listReleases({
             repo: github.context.repo.repo,
             owner: github.context.repo.owner,
             per_page: topList,
