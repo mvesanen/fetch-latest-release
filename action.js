@@ -28,10 +28,24 @@ async function run() {
   core.info(`Fetching the latest release for \`${owner}/${repo}\``)
 
   try {
-    latestRelease = await octokit.repos.getLatestRelease({
-      owner,
-      repo,
-    })
+    let releaseList = yield octokit.repos.listReleases({
+            repo: github.context.repo.repo,
+            owner: github.context.repo.owner,
+            per_page: topList,
+            page: 1
+    });
+    for (let i = 0; i < releaseList.data.length; i++) {
+            let releaseListElement = releaseList.data[i];
+            if ((!releaseListElement.draft) &&
+                (!releaseListElement.prerelease)) {
+                latestRelease=releaseListElement;
+                break;
+            }
+    }
+    //latestRelease = await octokit.repos.getLatestRelease({
+    //  owner,
+    //  repo,
+    //})
   } catch (error) {
     core.info('Could not fetch the latest release. Have you made one yet?')
     core.setFailed(error)
