@@ -26,13 +26,16 @@ async function run() {
   core.info(`Fetching the latest release for \`${owner}/${repo}\``)
 
   try {
-    const octokit = github.getOctokit(core.getInput('github_token', { required: true }))
+
+    const octokit = github.getOctokit(core.getInput('github_token', { required: true }));
+    // Load release list from GitHub
     let releaseList = yield octokit.repos.listReleases({
             repo: github.context.repo.repo,
             owner: github.context.repo.owner,
             per_page: topList,
             page: 1
     });
+    
     for (let i = 0; i < releaseList.data.length; i++) {
             let releaseListElement = releaseList.data[i];
             if ((!releaseListElement.draft) &&
